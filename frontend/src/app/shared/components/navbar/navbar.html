@@ -1,0 +1,63 @@
+<mat-toolbar color="primary" class="relative flex justify-between items-center">
+  <div class="flex items-center space-x-4">
+    <mat-icon>bed</mat-icon>
+    <span class="text-xl font-semibold">Salon namještaja</span>
+  </div>
+
+  <div class="hidden md:flex space-x-4 flex-grow justify-center">
+    <button mat-button routerLink="/">NASLOVNA</button>
+
+    <button mat-button [matMenuTriggerFor]="artikliMenu">
+      ARTIKLI
+      <mat-icon>arrow_drop_down</mat-icon>
+    </button>
+    <mat-menu #artikliMenu="matMenu">
+      <button mat-menu-item [routerLink]="['/articles', 1]">Dnevna soba</button>
+      <button mat-menu-item [routerLink]="['/articles', 2]">
+        Spavaća soba
+      </button>
+      <button mat-menu-item [routerLink]="['/articles', 3]">
+        Blagavaonica
+      </button>
+      <button mat-menu-item [routerLink]="['/articles', 4]">Kućni ured</button>
+    </mat-menu>
+
+    <button mat-button routerLink="/about">O NAMA</button>
+    <button mat-button routerLink="/contact">KONTAKT</button>
+  </div>
+
+  <div class="flex items-center space-x-2 px-5">
+    <button mat-icon-button routerLink="/cart">
+      <mat-icon>shopping_cart</mat-icon>
+    </button>
+  </div>
+
+  <ng-container class="ml-auto" *ngIf="!isLoggedIn; else loggedInTemplate">
+    <button mat-flat-button routerLink="/login" class="text-white">
+      <mat-icon>person</mat-icon>
+      Prijava
+    </button>
+  </ng-container>
+
+  <ng-template #loggedInTemplate>
+    <button mat-button [matMenuTriggerFor]="userMenu">
+      <mat-icon>person</mat-icon>
+    </button>
+    <mat-menu #userMenu="matMenu">
+      <button mat-menu-item>Odjava</button>
+    </mat-menu>
+  </ng-template>
+
+  <!-- Ikona za mobilni meni -->
+  <div class="md:hidden">
+    <button mat-icon-button [matMenuTriggerFor]="menu">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item routerLink="/">NASLOVNA</button>
+      <button mat-menu-item routerLink="/articles">ARTIKLI</button>
+      <button mat-menu-item routerLink="/about">O NAMA</button>
+      <button mat-menu-item routerLink="/contact">KONTAKT</button>
+    </mat-menu>
+  </div>
+</mat-toolbar>
