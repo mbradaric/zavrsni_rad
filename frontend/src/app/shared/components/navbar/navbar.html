@@ -42,9 +42,10 @@
   <ng-template #loggedInTemplate>
     <button mat-button [matMenuTriggerFor]="userMenu">
       <mat-icon>person</mat-icon>
+      {{ user?.first_name }} {{ user?.last_name }}
     </button>
     <mat-menu #userMenu="matMenu">
-      <button mat-menu-item>Odjava</button>
+      <button mat-menu-item (click)="logout()">Odjava</button>
     </mat-menu>
   </ng-template>
 
