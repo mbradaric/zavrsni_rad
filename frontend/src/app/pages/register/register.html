@@ -1,0 +1,158 @@
+<div
+  class="flex items-center justify-center min-h-[calc(100vh-4rem)] bg-gray-100"
+>
+  <mat-card class="w-full max-w-4xl p-6">
+    <mat-card-title class="text-2xl font-bold mb-6 pb-4">
+      Registracija
+    </mat-card-title>
+    <form (ngSubmit)="onSubmit()" [formGroup]="registerForm">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <mat-form-field class="w-full mb-4">
+            <mat-label>Ime</mat-label>
+            <input matInput formControlName="first_name" required />
+            <mat-error
+              *ngIf="registerForm.get('first_name')?.hasError('required')"
+            >
+              Ime je obavezno
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field class="w-full mb-4">
+            <mat-label>Prezime</mat-label>
+            <input matInput formControlName="last_name" required />
+            <mat-error
+              *ngIf="registerForm.get('last_name')?.hasError('required')"
+            >
+              Prezime je obavezno
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field class="w-full mb-4">
+            <mat-label>Email</mat-label>
+            <input matInput type="email" formControlName="email" required />
+            <mat-error *ngIf="registerForm.get('email')?.hasError('required')">
+              Email je obavezan
+            </mat-error>
+            <mat-error *ngIf="registerForm.get('email')?.hasError('email')">
+              Molimo unesite ispravan email
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field class="w-full mb-4">
+            <mat-label>Lozinka</mat-label>
+            <input
+              matInput
+              type="password"
+              formControlName="password"
+              required
+            />
+            <mat-error
+              *ngIf="registerForm.get('password')?.hasError('required')"
+            >
+              Lozinka je obavezna
+            </mat-error>
+            <mat-error
+              *ngIf="registerForm.get('password')?.hasError('minlength')"
+            >
+              Lozinka mora biti najmanje 8 znakova
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field class="w-full mb-4">
+            <mat-label>Potvrdi lozinku</mat-label>
+            <input
+              matInput
+              type="password"
+              formControlName="confirmPassword"
+              required
+            />
+            <mat-error
+              *ngIf="registerForm.get('confirmPassword')?.hasError('required')"
+            >
+              Molimo potvrdite lozinku
+            </mat-error>
+            <mat-error
+              *ngIf="
+                registerForm
+                  .get('confirmPassword')
+                  ?.hasError('passwordMismatch')
+              "
+            >
+              Lozinke se ne poklapaju
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div>
+          <mat-form-field class="w-full mb-4">
+            <mat-label>Broj telefona</mat-label>
+            <input
+              matInput
+              type="tel"
+              formControlName="phone_number"
+              required
+            />
+            <mat-error
+              *ngIf="registerForm.get('phone_number')?.hasError('required')"
+            >
+              Broj telefona je obavezan
+            </mat-error>
+            <mat-error
+              *ngIf="registerForm.get('phone_number')?.hasError('pattern')"
+            >
+              Molimo unesite ispravan broj telefona
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field class="w-full mb-4">
+            <mat-label>Adresa</mat-label>
+            <input matInput formControlName="address" required />
+            <mat-error
+              *ngIf="registerForm.get('address')?.hasError('required')"
+            >
+              Adresa je obavezna
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field class="w-full mb-4">
+            <mat-label>Grad</mat-label>
+            <input matInput formControlName="city" required />
+            <mat-error *ngIf="registerForm.get('city')?.hasError('required')">
+              Grad je obavezan
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field class="w-full mb-4">
+            <mat-label>Poštanski broj</mat-label>
+            <input matInput formControlName="postal_code" required />
+            <mat-error
+              *ngIf="registerForm.get('postal_code')?.hasError('required')"
+            >
+              Poštanski broj je obavezan
+            </mat-error>
+            <mat-error
+              *ngIf="registerForm.get('postal_code')?.hasError('pattern')"
+            >
+              Molimo unesite ispravan poštanski broj
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <button
+        mat-raised-button
+        color="primary"
+        class="w-full mt-4"
+        type="submit"
+        [disabled]="registerForm.invalid"
+      >
+        Registracija
+      </button>
+    </form>
+    <p class="mt-4 pt-5 text-center">
+      Već imate račun?
+      <a routerLink="/login" class="text-blue-600 hover:underline">Prijava</a>
+    </p>
+  </mat-card>
+</div>
