@@ -1,0 +1,77 @@
+<div
+  class="flex items-center justify-center min-h-[calc(100vh-4rem)] bg-gray-100"
+>
+  <mat-card class="w-full max-w-lg p-6">
+    <mat-card-title class="text-2xl font-bold mb-6"
+      >Dodaj novi artikal</mat-card-title
+    >
+    <form (ngSubmit)="onSubmit()" [formGroup]="articleForm">
+      <mat-form-field class="w-full mb-4 pt-4">
+        <mat-label>Naziv</mat-label>
+        <input matInput formControlName="title" required />
+        <mat-error *ngIf="articleForm.get('title')?.hasError('required')">
+          Naziv je obavezan
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="w-full mb-4">
+        <mat-label>Cijena</mat-label>
+        <input matInput type="number" formControlName="price" required />
+        <mat-error *ngIf="articleForm.get('price')?.hasError('required')">
+          Cijena je obavezna
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="w-full mb-4">
+        <mat-label>URL slike</mat-label>
+        <input matInput formControlName="img_src" required />
+        <mat-error *ngIf="articleForm.get('img_src')?.hasError('required')">
+          URL slike je obavezan
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="w-full mb-4">
+        <mat-label>Kategorija</mat-label>
+        <mat-select
+          formControlName="category_id"
+          (selectionChange)="onCategoryChange($event.value)"
+          required
+        >
+          <mat-option *ngFor="let category of categories" [value]="category.id">
+            {{ category.name }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="articleForm.get('category')?.hasError('required')">
+          Kategorija je obavezna
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="w-full mb-4">
+        <mat-label>Podkategorija</mat-label>
+        <mat-select formControlName="subcategory_id" required>
+          <mat-option
+            *ngFor="let subcategory of filteredSubcategories"
+            [value]="subcategory.id"
+          >
+            {{ subcategory.name }}
+          </mat-option>
+        </mat-select>
+        <mat-error
+          *ngIf="articleForm.get('subcategory_id')?.hasError('required')"
+        >
+          Podkategorija je obavezna
+        </mat-error>
+      </mat-form-field>
+
+      <button
+        mat-raised-button
+        color="primary"
+        class="w-full"
+        type="submit"
+        [disabled]="articleForm.invalid"
+      >
+        Dodaj
+      </button>
+    </form>
+  </mat-card>
+</div>

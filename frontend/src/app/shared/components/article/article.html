@@ -1,0 +1,37 @@
+<mat-card
+  class="max-w-sm mx-auto bg-white shadow-lg rounded-xl overflow-hidden border border-gray-200"
+>
+  <img
+    mat-card-image
+    [src]="img_src"
+    alt="{{ title }}"
+    class="w-full h-64 object-cover"
+  />
+  <mat-card-content class="p-6">
+    <div class="flex justify-between mb-4">
+      <span
+        class="text-xs font-semibold text-gray-500 bg-gray-100 px-3 py-1 rounded-full"
+      >
+        {{ category_id }}
+      </span>
+      <span
+        class="text-xs font-semibold text-gray-500 bg-gray-100 px-3 py-1 rounded-full"
+      >
+        {{ subcategory_id }}
+      </span>
+    </div>
+    <h2 class="text-2xl font-extrabold text-gray-800 mb-4">{{ title }}</h2>
+    <div class="flex items-center mb-4">
+      <span class="text-3xl font-bold text-gray-900">
+        {{ formattedPrice }} KM
+      </span>
+    </div>
+    <button
+      mat-raised-button
+      color="primary"
+      class="w-full py-3 rounded-full shadow-md transition-transform transform hover:scale-105"
+    >
+      Add to Cart
+    </button>
+  </mat-card-content>
+</mat-card>

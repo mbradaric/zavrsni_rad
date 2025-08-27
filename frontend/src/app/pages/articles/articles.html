@@ -1,0 +1,15 @@
+<div class="container mx-auto p-6">
+  <h1 class="text-3xl font-bold text-gray-800 mb-6"></h1>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div *ngFor="let article of articles">
+      <app-article
+        [img_src]="article.img_src"
+        [category_id]="article.category_id"
+        [subcategory_id]="article.subcategory_id"
+        [title]="article.title"
+        [price]="article.price"
+      ></app-article>
+    </div>
+  </div>
+</div>
