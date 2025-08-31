@@ -3,7 +3,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Auth } from '../../../core/services/auth';
 import { User } from '../../../core/models/user';
@@ -15,7 +15,6 @@ import { User } from '../../../core/models/user';
     MatButtonModule,
     MatMenuModule,
     MatIconModule,
-    RouterOutlet,
     RouterLink,
     CommonModule,
   ],

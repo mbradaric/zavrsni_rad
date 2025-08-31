@@ -1,0 +1,29 @@
+<h2 mat-dialog-title>Uredi artikal</h2>
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <mat-form-field class="w-full">
+    <mat-label>Naziv</mat-label>
+    <input matInput formControlName="title" />
+  </mat-form-field>
+
+  <mat-form-field class="w-full">
+    <mat-label>Cijena</mat-label>
+    <input matInput type="number" formControlName="price" />
+  </mat-form-field>
+
+  <mat-form-field class="w-full">
+    <mat-label>URL slike</mat-label>
+    <input matInput formControlName="img_src" />
+  </mat-form-field>
+
+  <div class="flex justify-end space-x-2 mt-4">
+    <button mat-button (click)="dialogRef.close()">Otkaži</button>
+    <button
+      mat-raised-button
+      color="primary"
+      type="submit"
+      [disabled]="form.invalid"
+    >
+      Spremi
+    </button>
+  </div>
+</form>

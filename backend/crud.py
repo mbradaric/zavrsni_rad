@@ -61,3 +61,15 @@ def remove_article(db: Session, article_id: int):
     db.query(models.Article).filter(models.Article.id == article_id).delete()
     db.commit()
     return {"message": "Artikl uspješno izbrisan"}
+
+
+def update_article(db: Session, db_article: models.Article, article: schemas.ArticleUpdate):
+    db_article.title = article.title
+    db_article.price = article.price
+    db_article.img_src = article.img_src
+    db_article.category_id = article.category_id
+    db_article.subcategory_id = article.subcategory_id
+
+    db.commit()
+    db.refresh(db_article)
+    return db_article

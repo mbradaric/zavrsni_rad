@@ -7,6 +7,7 @@ import { About } from './pages/about/about';
 import { Contact } from './pages/contact/contact';
 import { Cart } from './pages/cart/cart';
 import { AddArticle } from './pages/add-article/add-article';
+import { AdminPage } from './pages/admin-page/admin-page';
 
 export const routes: Routes = [
   {
@@ -42,8 +43,12 @@ export const routes: Routes = [
     component: Cart,
   },
   {
-    path: 'add-article',
+    path: 'admin/articles/add',
     component: AddArticle,
+  },
+  {
+    path: 'admin/articles',
+    component: AdminPage,
   },
 
   // Wildcard route

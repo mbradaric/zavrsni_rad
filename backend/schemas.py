@@ -10,12 +10,17 @@ class ArticleBase(BaseModel):
 class ArticleCreate(ArticleBase):
     pass
 
+class ArticleUpdate(ArticleBase):
+    pass
+
 class Article(ArticleBase):
     id: int
 
     class Config:
         from_attributes = True
 
+
+# ---------------- Users ---------------- #
 class UserBase(BaseModel):
     email: EmailStr
     first_name: str

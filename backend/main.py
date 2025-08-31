@@ -92,3 +92,10 @@ def delete_article(article_id: int, db: Session = Depends(get_db)):
     if db_article is None:
         raise HTTPException(status_code=404, detail="Artikl nije pronađen")
     return crud.remove_article(db, article_id=article_id)
+
+@app.put("/articles/{article_id}", response_model=schemas.Article)
+def update_article(article_id: int, article: schemas.ArticleUpdate, db: Session = Depends(get_db)):
+    db_article = crud.get_article(db, article_id=article_id)
+    if db_article is None:
+        raise HTTPException(status_code=404, detail="Artikl nije pronađen")
+    return crud.update_article(db=db, db_article=db_article, article=article)
