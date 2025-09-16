@@ -29,6 +29,7 @@ import { firstValueFrom } from 'rxjs';
 })
 export class AddArticle implements OnInit {
   articleForm: FormGroup;
+  articleId?: number;
 
   categories = [
     {

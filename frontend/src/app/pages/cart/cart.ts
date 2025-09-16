@@ -1,38 +1,75 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { CartItem } from '../../core/models/cart-item';
+import { CartService } from '../../core/services/cart-service';
+import { Subscription } from 'rxjs';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
+import { MatInputModule } from '@angular/material/input';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-cart',
-  imports: [CommonModule, MatButtonModule],
+  imports: [
+    CommonModule,
+    MatButtonModule,
+    MatIconModule,
+    MatCardModule,
+    MatInputModule,
+    FormsModule,
+  ],
   templateUrl: './cart.html',
   styleUrl: './cart.scss',
 })
-export class Cart {
-  cartItems: CartItem[] = [
-    {
-      title: 'Modern Kitchen Desk',
-      price: 199.99,
-      quantity: 1,
-      imgSrc: 'assets/images/kitchen-desk.jpg',
-    },
-    {
-      title: 'Comfortable Living Room Sofa',
-      price: 399.99,
-      quantity: 2,
-      imgSrc: 'assets/images/living-room-sofa.jpg',
-    },
-  ];
+export class Cart implements OnInit, OnDestroy {
+  cartItems: CartItem[] = [];
+  private cartSubscription?: Subscription;
 
-  constructor() {}
+  constructor(private cartService: CartService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.cartSubscription = this.cartService.cartItems$.subscribe(
+      (items) => (this.cartItems = items)
+    );
+  }
+
+  ngOnDestroy(): void {
+    if (this.cartSubscription) {
+      this.cartSubscription.unsubscribe();
+    }
+  }
 
   getTotalPrice(): number {
-    return this.cartItems.reduce(
-      (total, item) => total + item.price * item.quantity,
-      0
-    );
+    return this.cartService.getTotalPrice();
+  }
+
+  removeItem(itemId: number): void {
+    this.cartService.removeFromCart(itemId);
+  }
+
+  updateQuantity(itemId: number, quantity: number): void {
+    this.cartService.updateQuantity(itemId, quantity);
+  }
+
+  increaseQuantity(item: CartItem): void {
+    this.updateQuantity(item.id, item.quantity + 1);
+  }
+
+  decreaseQuantity(item: CartItem): void {
+    if (item.quantity > 1) {
+      this.updateQuantity(item.id, item.quantity - 1);
+    }
+  }
+
+  clearCart(): void {
+    if (confirm('Jeste li sigurni da želite isprazniti korpu?')) {
+      this.cartService.clearCart();
+    }
+  }
+
+  checkout(): void {
+    console.log('Nastavlja checkout sa artiklima:', this.cartItems);
+    alert('TODO: dodati checkout funkcionalnost');
   }
 }

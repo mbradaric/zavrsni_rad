@@ -4,6 +4,7 @@
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
     <div *ngFor="let article of articles">
       <app-article
+        [articleId]="article.id"
         [img_src]="article.img_src"
         [category_id]="article.category_id"
         [subcategory_id]="article.subcategory_id"

@@ -1,3 +1,5 @@
+from typing import Optional
+from sqlalchemy import and_
 from sqlalchemy.orm import Session
 from . import models, schemas
 import bcrypt
@@ -73,3 +75,200 @@ def update_article(db: Session, db_article: models.Article, article: schemas.Art
     db.commit()
     db.refresh(db_article)
     return db_article
+
+
+# Cart CRUD
+
+def get_cart(db: Session, user_id: Optional[int] = None, session_id: Optional[str] = None) -> schemas.Cart:
+    """Get cart items for a user or session"""
+    if user_id:
+        cart_items = db.query(models.CartItem).filter(
+            models.CartItem.user_id == user_id
+        ).all()
+    elif session_id:
+        cart_items = db.query(models.CartItem).filter(
+            models.CartItem.session_id == session_id
+        ).all()
+    else:
+        return schemas.Cart(items=[], total_price=0.0, total_items=0)
+    
+    items = []
+    total_price = 0.0
+    total_items = 0
+    
+    for cart_item in cart_items:
+        article = cart_item.article
+        item = schemas.CartItem(
+            id=article.id,
+            title=article.title,
+            price=article.price,
+            quantity=cart_item.quantity,
+            img_src=article.img_src
+        )
+        items.append(item)
+        total_price += article.price * cart_item.quantity
+        total_items += cart_item.quantity
+    
+    return schemas.Cart(
+        user_id=user_id,
+        items=items,
+        total_price=total_price,
+        total_items=total_items
+    )
+
+def add_to_cart(
+    db: Session, 
+    article_id: int, 
+    quantity: int = 1,
+    user_id: Optional[int] = None, 
+    session_id: Optional[str] = None
+) -> schemas.Cart:
+    """Add an article to the cart"""
+    # Check if item already exists in cart
+    if user_id:
+        existing_item = db.query(models.CartItem).filter(
+            and_(
+                models.CartItem.user_id == user_id,
+                models.CartItem.article_id == article_id
+            )
+        ).first()
+    elif session_id:
+        existing_item = db.query(models.CartItem).filter(
+            and_(
+                models.CartItem.session_id == session_id,
+                models.CartItem.article_id == article_id
+            )
+        ).first()
+    else:
+        existing_item = None
+    
+    if existing_item:
+        # Update quantity if item exists
+        existing_item.quantity += quantity
+        db.commit()
+        db.refresh(existing_item)
+    else:
+        # Create new cart item
+        db_cart_item = models.CartItem(
+            user_id=user_id,
+            session_id=session_id,
+            article_id=article_id,
+            quantity=quantity
+        )
+        db.add(db_cart_item)
+        db.commit()
+        db.refresh(db_cart_item)
+    
+    return get_cart(db, user_id=user_id, session_id=session_id)
+
+def update_cart_item(
+    db: Session,
+    article_id: int,
+    quantity: int,
+    user_id: Optional[int] = None,
+    session_id: Optional[str] = None
+) -> schemas.Cart:
+    """Update the quantity of an item in the cart"""
+    if user_id:
+        cart_item = db.query(models.CartItem).filter(
+            and_(
+                models.CartItem.user_id == user_id,
+                models.CartItem.article_id == article_id
+            )
+        ).first()
+    elif session_id:
+        cart_item = db.query(models.CartItem).filter(
+            and_(
+                models.CartItem.session_id == session_id,
+                models.CartItem.article_id == article_id
+            )
+        ).first()
+    else:
+        cart_item = None
+    
+    if cart_item:
+        if quantity <= 0:
+            # Remove item if quantity is 0 or less
+            db.delete(cart_item)
+        else:
+            cart_item.quantity = quantity
+        db.commit()
+    
+    return get_cart(db, user_id=user_id, session_id=session_id)
+
+def remove_from_cart(
+    db: Session,
+    article_id: int,
+    user_id: Optional[int] = None,
+    session_id: Optional[str] = None
+) -> schemas.Cart:
+    if user_id:
+        cart_item = db.query(models.CartItem).filter(
+            and_(
+                models.CartItem.user_id == user_id,
+                models.CartItem.article_id == article_id
+            )
+        ).first()
+    elif session_id:
+        cart_item = db.query(models.CartItem).filter(
+            and_(
+                models.CartItem.session_id == session_id,
+                models.CartItem.article_id == article_id
+            )
+        ).first()
+    else:
+        cart_item = None
+    
+    if cart_item:
+        db.delete(cart_item)
+        db.commit()
+    
+    return get_cart(db, user_id=user_id, session_id=session_id)
+
+def clear_cart(
+    db: Session,
+    user_id: Optional[int] = None,
+    session_id: Optional[str] = None
+) -> None:
+    """Clear all items from the cart"""
+    if user_id:
+        db.query(models.CartItem).filter(
+            models.CartItem.user_id == user_id
+        ).delete()
+    elif session_id:
+        db.query(models.CartItem).filter(
+            models.CartItem.session_id == session_id
+        ).delete()
+    
+    db.commit()
+
+def merge_carts(
+    db: Session,
+    user_id: int,
+    session_id: str
+) -> None:
+    """Merge anonymous cart with user cart when user logs in"""
+    # Get anonymous cart items
+    anonymous_items = db.query(models.CartItem).filter(
+        models.CartItem.session_id == session_id
+    ).all()
+    
+    for anon_item in anonymous_items:
+        # Check if user already has this item
+        user_item = db.query(models.CartItem).filter(
+            and_(
+                models.CartItem.user_id == user_id,
+                models.CartItem.article_id == anon_item.article_id
+            )
+        ).first()
+        
+        if user_item:
+            # Merge quantities
+            user_item.quantity += anon_item.quantity
+            db.delete(anon_item)
+        else:
+            # Transfer item to user
+            anon_item.user_id = user_id
+            anon_item.session_id = None
+    
+    db.commit()
