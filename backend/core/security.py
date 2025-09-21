@@ -55,10 +55,6 @@ async def get_current_user(
     token: Optional[str] = Depends(oauth2_scheme),
     db: Session = Depends(get_db),
 ) -> Optional[models.User]:
-    """
-    - If no token is provided: return None (anonymous).
-    - If token is provided: validate and return the user or raise 401.
-    """
     if not token:
         return None
 

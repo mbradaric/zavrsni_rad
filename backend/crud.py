@@ -230,7 +230,6 @@ def clear_cart(
     user_id: Optional[int] = None,
     session_id: Optional[str] = None
 ) -> None:
-    """Clear all items from the cart"""
     if user_id:
         db.query(models.CartItem).filter(
             models.CartItem.user_id == user_id
@@ -242,19 +241,17 @@ def clear_cart(
     
     db.commit()
 
+# for anonymous users
 def merge_carts(
     db: Session,
     user_id: int,
     session_id: str
 ) -> None:
-    """Merge anonymous cart with user cart when user logs in"""
-    # Get anonymous cart items
     anonymous_items = db.query(models.CartItem).filter(
         models.CartItem.session_id == session_id
     ).all()
     
     for anon_item in anonymous_items:
-        # Check if user already has this item
         user_item = db.query(models.CartItem).filter(
             and_(
                 models.CartItem.user_id == user_id,
@@ -263,11 +260,9 @@ def merge_carts(
         ).first()
         
         if user_item:
-            # Merge quantities
             user_item.quantity += anon_item.quantity
             db.delete(anon_item)
         else:
-            # Transfer item to user
             anon_item.user_id = user_id
             anon_item.session_id = None
     
