@@ -7,6 +7,8 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatTableModule } from '@angular/material/table';
 import { firstValueFrom } from 'rxjs';
 import { EditArticle } from '../../shared/components/edit-article/edit-article';
+import { RouterLink } from '@angular/router';
+import { CATEGORIES } from '../../core/models/article-categories';
 
 @Component({
   selector: 'app-admin-page',
@@ -16,6 +18,7 @@ import { EditArticle } from '../../shared/components/edit-article/edit-article';
     MatButtonModule,
     MatTableModule,
     MatDialogModule,
+    RouterLink,
   ],
   templateUrl: './admin-page.html',
   styleUrl: './admin-page.scss',
@@ -23,6 +26,7 @@ import { EditArticle } from '../../shared/components/edit-article/edit-article';
 export class AdminPage implements OnInit {
   articles: any[] = [];
   displayedColumns: string[] = [
+    'id',
     'title',
     'price',
     'category',
@@ -74,5 +78,17 @@ export class AdminPage implements OnInit {
         }
       }
     });
+  }
+
+  getCategoryName(category_id: number): string {
+    return CATEGORIES.find((cat) => cat.id === category_id)?.name || '';
+  }
+
+  getSubcategoryName(category_id: number, subcategory_id: number): string {
+    const category = CATEGORIES.find((cat) => cat.id === category_id);
+    return (
+      category?.subcategories.find((sub) => sub.id === subcategory_id)?.name ||
+      ''
+    );
   }
 }
