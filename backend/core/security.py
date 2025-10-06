@@ -1,3 +1,5 @@
+import os
+import secrets
 from datetime import datetime, timedelta, timezone
 from typing import Optional
 from jose import JWTError, jwt
@@ -10,7 +12,11 @@ from sqlalchemy.orm import Session
 from ..database import SessionLocal
 from .. import crud, models
 
-SECRET_KEY = "817aec03c8ffd573f3b63efe108084394e452439cccea64a3fff4a14d7ed6179"
+SECRET_KEY = os.getenv("SECRET_KEY")
+if not SECRET_KEY:
+    SECRET_KEY = secrets.token_urlsafe(32)
+    print("WARNING: SECRET_KEY not set; Using generated key (invalid on restart)")
+
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
@@ -83,3 +89,21 @@ async def get_current_user(
         )
 
     return user
+
+async def get_current_admin_user(
+    current_user: models.User = Depends(get_current_user)
+) -> models.User:
+    if not current_user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Not authenticated",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    
+    if not current_user.is_admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not authorized. Admin access required.",
+        )
+    
+    return current_user

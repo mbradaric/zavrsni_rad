@@ -6,7 +6,7 @@ import uuid
 
 from . import crud, models, schemas
 from .database import SessionLocal, engine
-from .core.security import create_access_token, hash_password, verify_password, get_current_user
+from .core.security import create_access_token, hash_password, verify_password, get_current_user, get_current_admin_user
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -61,7 +61,7 @@ def register_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Email već registriran")
     return crud.create_user(db=db, user=user)
 
-@app.post("/login/")
+@app.post("/login/", response_model=schemas.LoginResponse)
 def login_user(login: schemas.UserLogin, db: Session = Depends(get_db)):
     user = crud.get_user_by_email(db, email=login.email)
     if not user or not verify_password(login.password, user.hashed_password):
@@ -76,11 +76,16 @@ def login_user(login: schemas.UserLogin, db: Session = Depends(get_db)):
         "first_name": user.first_name,
         "last_name": user.last_name,
         "user_id": user.id,
+        "is_admin": user.is_admin,
     }
 
 # articles endpoints
 @app.post("/articles/", response_model=schemas.Article)
-def create_article(article: schemas.ArticleCreate, db: Session = Depends(get_db)):
+def create_article(
+    article: schemas.ArticleCreate,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_admin_user)
+):
     return crud.create_article(db=db, article=article)
 
 @app.get("/articles/", response_model=list[schemas.Article])
@@ -96,14 +101,23 @@ def read_article(article_id: int, db: Session = Depends(get_db)):
     return db_article
 
 @app.delete("/articles/{article_id}", response_model=dict)
-def delete_article(article_id: int, db: Session = Depends(get_db)):
+def delete_article(
+    article_id: int,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_admin_user)
+):
     db_article = crud.get_article(db, article_id=article_id)
     if db_article is None:
         raise HTTPException(status_code=404, detail="Artikl nije pronađen")
     return crud.remove_article(db, article_id=article_id)
 
 @app.put("/articles/{article_id}", response_model=schemas.Article)
-def update_article(article_id: int, article: schemas.ArticleUpdate, db: Session = Depends(get_db)):
+def update_article(
+    article_id: int,
+    article: schemas.ArticleUpdate,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_admin_user)
+):
     db_article = crud.get_article(db, article_id=article_id)
     if db_article is None:
         raise HTTPException(status_code=404, detail="Artikl nije pronađen")

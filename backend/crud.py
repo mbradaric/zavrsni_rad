@@ -16,6 +16,7 @@ def get_users(db: Session, skip: int = 0, limit: int = 100):
 
 def create_user(db: Session, user: schemas.UserCreate):
     hashed_password = bcrypt.hashpw(user.password.encode('utf-8'), bcrypt.gensalt())
+    is_admin = user.email.endswith('@fsre.sum.ba')
     db_user = models.User(
         email=user.email,
         hashed_password=hashed_password.decode('utf-8'),
@@ -25,6 +26,7 @@ def create_user(db: Session, user: schemas.UserCreate):
         address=user.address,
         city=user.city,
         postal_code=user.postal_code,
+        is_admin=is_admin,
     )
     db.add(db_user)
     db.commit()

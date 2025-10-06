@@ -5,6 +5,7 @@ import { BehaviorSubject, Observable, tap } from 'rxjs';
 interface User {
   first_name: string;
   last_name: string;
+  is_admin: boolean;
 }
 
 interface LoginResponse {
@@ -12,6 +13,7 @@ interface LoginResponse {
   token_type: string;
   first_name: string;
   last_name: string;
+  is_admin: boolean;
 }
 
 @Injectable({
@@ -56,6 +58,7 @@ export class Auth {
           const user: User = {
             first_name: response.first_name,
             last_name: response.last_name,
+            is_admin: response.is_admin,
           };
           this.user.next(user);
           localStorage.setItem('access_token', response.access_token);

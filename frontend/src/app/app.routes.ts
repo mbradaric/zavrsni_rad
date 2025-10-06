@@ -8,6 +8,7 @@ import { Contact } from './pages/contact/contact';
 import { Cart } from './pages/cart/cart';
 import { AddArticle } from './pages/add-article/add-article';
 import { AdminPage } from './pages/admin-page/admin-page';
+import { adminGuard } from './core/guards/admin-guard';
 
 export const routes: Routes = [
   {
@@ -45,10 +46,12 @@ export const routes: Routes = [
   {
     path: 'admin/articles/add',
     component: AddArticle,
+    canActivate: [adminGuard],
   },
   {
     path: 'admin/articles',
     component: AdminPage,
+    canActivate: [adminGuard],
   },
 
   // Wildcard route

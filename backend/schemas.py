@@ -71,6 +71,15 @@ class User(UserBase):
     class Config:
         from_attributes = True
 
+# ---------------- Login Response ---------------- #
 class UserLogin(BaseModel):
     email: EmailStr
     password: str
+
+class LoginResponse(BaseModel):
+    access_token: str
+    token_type: str
+    first_name: str
+    last_name: str
+    user_id: int
+    is_admin: bool

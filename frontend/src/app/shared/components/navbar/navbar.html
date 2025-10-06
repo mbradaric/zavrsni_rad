@@ -45,7 +45,9 @@
       {{ user?.first_name }} {{ user?.last_name }}
     </button>
     <mat-menu #userMenu="matMenu">
-      <button mat-menu-item routerLink="/admin/articles">Upravljanje</button>
+      <button mat-menu-item routerLink="/admin/articles" *ngIf="user?.is_admin">
+        Upravljanje
+      </button>
       <button mat-menu-item (click)="logout()">Odjava</button>
     </mat-menu>
   </ng-template>
