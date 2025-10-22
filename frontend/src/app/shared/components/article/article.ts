@@ -4,6 +4,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { CartService } from '../../../core/services/cart-service';
+import { CATEGORIES } from '../../../core/models/article-categories';
 
 @Component({
   selector: 'app-article',
@@ -26,6 +27,18 @@ export class Article {
 
   get formattedPrice(): string {
     return this.price.toFixed(2);
+  }
+
+  getCategoryName(category_id: number): string {
+    return CATEGORIES.find((cat) => cat.id === category_id)?.name || '';
+  }
+
+  getSubcategoryName(category_id: number, subcategory_id: number): string {
+    const category = CATEGORIES.find((cat) => cat.id === category_id);
+    return (
+      category?.subcategories.find((sub) => sub.id === subcategory_id)?.name ||
+      ''
+    );
   }
 
   addToCart(): void {

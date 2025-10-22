@@ -32,9 +32,23 @@ export class Auth {
     const token = localStorage.getItem('access_token');
     const userStr = localStorage.getItem('user');
     if (token && userStr) {
+      if (this.isTokenExpired(token)) {
+        this.logout();
+        return;
+      }
       const user = JSON.parse(userStr) as User;
       this.loggedIn.next(true);
       this.user.next(user);
+    }
+  }
+
+  private isTokenExpired(token: string): boolean {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const exp = payload.exp * 1000;
+      return Date.now() >= exp;
+    } catch (error) {
+      return true;
     }
   }
 
