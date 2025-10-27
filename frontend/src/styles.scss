@@ -41,8 +41,38 @@ body {
 html,
 body {
   height: 100%;
+  overflow-x: hidden;
+  max-width: 100vw;
 }
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+mat-toolbar {
+  overflow-x: hidden;
+}
+
+.mobile-only {
+  display: inline-flex !important;
+  align-items: center;
+}
+
+.desktop-only {
+  display: none !important;
+  align-items: center;
+}
+
+@media (min-width: 768px) {
+  .mobile-only {
+    display: none !important;
+  }
+
+  .desktop-only {
+    display: inline-flex !important;
+  }
 }

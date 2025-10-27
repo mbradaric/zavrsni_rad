@@ -1,5 +1,7 @@
-<div class="container mx-auto p-6">
-  <h1 class="text-3xl font-bold text-gray-800 mb-6">Korpa</h1>
+<div class="container mx-auto p-4 sm:p-6 max-w-full overflow-x-hidden">
+  <h1 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-4 sm:mb-6">
+    Korpa
+  </h1>
 
   <div *ngIf="cartItems.length === 0" class="text-gray-600">
     Vaša korpa je prazna
@@ -11,39 +13,42 @@
   </div>
 
   <div *ngIf="cartItems.length > 0">
-    <div class="grid grid-cols-1 gap-6 mb-6">
+    <div class="grid grid-cols-1 gap-4 sm:gap-6 mb-4 sm:mb-6">
       <div
         *ngFor="let item of cartItems"
-        class="flex flex-col sm:flex-row items-start sm:items-center gap-4 border p-4 rounded-lg shadow"
+        class="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 border p-3 sm:p-4 rounded-lg shadow"
       >
         <img
           [src]="item.imgSrc"
           [alt]="item.title"
-          class="w-24 h-24 object-cover rounded"
+          class="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded"
         />
 
         <div class="flex-1 w-full">
-          <div class="flex items-start justify-between gap-3">
+          <div class="flex items-start justify-between gap-2 sm:gap-3">
             <div>
-              <h2 class="text-xl font-bold text-gray-800">{{ item.title }}</h2>
-              <p class="text-gray-600">
+              <h2 class="text-lg sm:text-xl font-bold text-gray-800">
+                {{ item.title }}
+              </h2>
+              <p class="text-sm sm:text-base text-gray-600">
                 {{ item.price | number : "1.2-2" }} KM/kom
               </p>
             </div>
           </div>
 
-          <div class="mt-3 flex items-center gap-2">
+          <div class="mt-2 sm:mt-3 flex items-center gap-2">
             <button
               mat-icon-button
               aria-label="Smanji količinu"
               (click)="decreaseQuantity(item)"
+              class="scale-90 sm:scale-100"
             >
               <mat-icon>remove</mat-icon>
             </button>
 
             <input
               type="number"
-              class="w-20 border rounded px-2 py-1 text-center"
+              class="w-16 sm:w-20 border rounded px-2 py-1 text-center text-sm sm:text-base"
               min="1"
               [(ngModel)]="item.quantity"
               (change)="updateQuantity(item.id, item.quantity)"
@@ -53,18 +58,21 @@
               mat-icon-button
               aria-label="Povećaj količinu"
               (click)="increaseQuantity(item)"
+              class="scale-90 sm:scale-100"
             >
               <mat-icon>add</mat-icon>
             </button>
 
-            <span class="ml-3 text-gray-600"
+            <span class="ml-2 sm:ml-3 text-sm sm:text-base text-gray-600"
               >Količina: {{ item.quantity }}</span
             >
           </div>
         </div>
 
-        <div class="sm:ml-auto flex items-center justify-center px-4">
-          <p class="text-xl font-bold text-gray-800">
+        <div
+          class="sm:ml-auto flex items-center justify-between sm:justify-center w-full sm:w-auto px-0 sm:px-4"
+        >
+          <p class="text-lg sm:text-xl font-bold text-gray-800">
             {{ item.price * item.quantity | number : "1.2-2" }} KM
           </p>
           <button
@@ -81,23 +89,35 @@
     </div>
 
     <div
-      class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+      class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4"
     >
-      <div class="text-2xl font-bold text-gray-800">
+      <div class="text-xl sm:text-2xl font-bold text-gray-800">
         Ukupno: {{ getTotalPrice() | number : "1.2-2" }} KM
       </div>
 
-      <div class="flex items-center gap-3">
-        <button mat-stroked-button color="warn" (click)="clearCart()">
+      <div
+        class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 w-full sm:w-auto"
+      >
+        <button
+          mat-stroked-button
+          color="warn"
+          (click)="clearCart()"
+          class="w-full sm:w-auto"
+        >
           Isprazni korpu
         </button>
-        <button mat-raised-button color="primary" (click)="checkout()">
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="checkout()"
+          class="w-full sm:w-auto"
+        >
           Plaćanje
         </button>
       </div>
     </div>
 
-    <div class="mt-6">
+    <div class="mt-4 sm:mt-6">
       <button mat-button routerLink="/">Nastavi kupnju</button>
     </div>
   </div>
