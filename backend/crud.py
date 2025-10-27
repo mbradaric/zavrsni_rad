@@ -78,6 +78,14 @@ def update_article(db: Session, db_article: models.Article, article: schemas.Art
     db.refresh(db_article)
     return db_article
 
+def search_articles(db: Session, query: str, limit: int = 50):
+    pattern = f"%{query}%"
+    return (
+        db.query(models.Article)
+        .filter(models.Article.title.ilike(pattern))
+        .limit(limit)
+        .all()
+    )
 
 # Cart CRUD
 

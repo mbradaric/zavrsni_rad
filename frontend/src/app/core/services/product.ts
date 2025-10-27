@@ -17,4 +17,11 @@ export class Product {
     }
     return this.http.get<any[]>(this.baseUrl, { params });
   }
+
+  searchArticles(query: string, limit: number = 50): Observable<any[]> {
+    const params = new HttpParams()
+      .set('query', query)
+      .set('limit', limit.toString());
+    return this.http.get<any[]>(`${this.baseUrl}/search/`, { params });
+  }
 }

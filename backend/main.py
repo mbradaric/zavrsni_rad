@@ -123,6 +123,14 @@ def update_article(
         raise HTTPException(status_code=404, detail="Artikl nije pronađen")
     return crud.update_article(db=db, db_article=db_article, article=article)
 
+@app.get("/articles/search/", response_model=list[schemas.Article])
+def search_articles(
+    query: str = Query(..., min_length=1),
+    limit: int = Query(50, ge=1, le=100),
+    db: Session = Depends(get_db),
+):
+    return crud.search_articles(db, query=query, limit=limit)
+
 
 # cart endpoints
 @app.get("/cart/", response_model=schemas.Cart)
